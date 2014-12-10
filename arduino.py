@@ -56,4 +56,5 @@ def write(value):
 
 def close():
     global arduino
-    arduino.close()
+    if arduino:
+        arduino.close()
