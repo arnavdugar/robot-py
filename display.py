@@ -1,5 +1,6 @@
 import tkinter
 import position
+import math
 
 
 class Display(tkinter.Tk):
@@ -29,23 +30,25 @@ class Display(tkinter.Tk):
 
 class Canvas(tkinter.Canvas):
 
-    default_rotation = ((-1, 0, 0), (0, -1, 0), (0, 0, -1), (-1, -3, -2))
+    default_rotation3d = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 3, 2))
+    default_rotation2d = (0.5, 0, 1, .1)
     final_view = position.Position(0, 0, 1)
 
     def __init__(self, master, index):
         tkinter.Canvas.__init__(self, master, width=400, height=400)
         self.grid(column=(index % 2), row=(index // 2))
-        self.rotation = position.Position(*Canvas.default_rotation[index])
+        self.rotation3d = position.Position(*Canvas.default_rotation3d[index])
+        self.rotation2d = Canvas.default_rotation2d[index] * math.pi
 
     @property
-    def rotation(self):
+    def rotation3d(self):
         return self._rotation
         
-    @rotation.setter
-    def rotation(self, rotation):
-        self._rotation = rotation
-        self.angle = Canvas.final_view.angle(self.rotation)
-        self.axis = Canvas.final_view.cross(self.rotation)
+    @rotation3d.setter
+    def rotation3d(self, rotation):
+        self._rotation3d = rotation
+        self.angle = -Canvas.final_view.angle(rotation)
+        self.axis = Canvas.final_view.cross(rotation)
         magnitude = self.axis.magnitude
         if magnitude == 0:
             self.axis = position.Position(0, 1, 0)
@@ -56,7 +59,8 @@ class Canvas(tkinter.Canvas):
         values = []
         for point in points:
             rotated = point.rotated(self.axis, self.angle)
-            values.append(200 + rotated.x)
+            rotated.rotate_z(self.rotation2d)
+            values.append(200 - rotated.x)
             values.append(200 + rotated.y)
         return values
 
