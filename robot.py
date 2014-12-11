@@ -85,16 +85,17 @@ class Segment:
 
     @property
     def global_axis(self):
-        if self.previous:
-            return self.axis_normalized.rotated(self.previous.global_axis, self.previous.angle)
-        else:
-            return self.axis_normalized
+        axis, current = self.axis_normalized, self.previous
+        while current:
+            axis = axis.rotated(current.axis_normalized, current.angle)
+            current = current.previous
+        return axis
 
     @property
     def global_direction_center(self):
         center, current = self.direction_center_normalized, self.previous
         while current:
-            center = center.rotated(current.global_axis, current.angle)
+            center = center.rotated(current.axis_normalized, current.angle)
             current = current.previous
         return center
 

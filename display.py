@@ -29,7 +29,7 @@ class Display(tkinter.Tk):
 
 class Canvas(tkinter.Canvas):
 
-    default_rotation = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 3, 2))
+    default_rotation = ((-1, 0, 0), (0, -1, 0), (0, 0, -1), (-1, -3, -2))
     final_view = position.Position(0, 0, 1)
 
     def __init__(self, master, index):

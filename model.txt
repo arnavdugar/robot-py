@@ -23,7 +23,7 @@
                 "class": "position.Position",
                 "x": 0,
                 "y": 0,
-                "z": -1
+                "z": 1
             },
             "direction_center": {
                 "class": "position.Position",
@@ -45,9 +45,9 @@
             },
             "direction_center": {
                 "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": 1
+                "x": -1,
+                "y": 1,
+                "z": 1.41421356237
             },
             "default_rotation": 0.5,
             "write_index": 10
@@ -63,9 +63,9 @@
             },
             "direction_center": {
                 "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": 1
+                "x": -1,
+                "y": 1,
+                "z": 0
             },
             "default_rotation": -0.5,
             "write_index": 11
@@ -87,7 +87,7 @@
                 "class": "position.Position",
                 "x": 0,
                 "y": 0,
-                "z": 1
+                "z": -1
             },
             "direction_center": {
                 "class": "position.Position",
@@ -109,11 +109,11 @@
             },
             "direction_center": {
                 "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": 1
+                "x": -1,
+                "y": -1,
+                "z": 1.41421356237
             },
-            "default_rotation": 0.5,
+            "default_rotation": -0.5,
             "write_index": 7
         }, {
             "class": "robot.Segment",
@@ -127,11 +127,11 @@
             },
             "direction_center": {
                 "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": 1
+                "x": -1,
+                "y": -1,
+                "z": 0
             },
-            "default_rotation": -0.5,
+            "default_rotation": 0.5,
             "write_index": 8
         }]
     }, {
@@ -151,7 +151,7 @@
                 "class": "position.Position",
                 "x": 0,
                 "y": 0,
-                "z": 1
+                "z": -1
             },
             "direction_center": {
                 "class": "position.Position",
@@ -167,9 +167,27 @@
             "length": 57.0,
             "axis": {
                 "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": -1
+                "x": 1,
+                "y": -1,
+                "z": 0
+            },
+            "direction_center": {
+                "class": "position.Position",
+                "x": 1,
+                "y": 1,
+                "z": 1.41421356237
+            },
+            "default_rotation": -0.5,
+            "write_index": 1
+        }, {
+            "class": "robot.Segment",
+            "name": "Tip Front Right Segment",
+            "length": 116.0,
+            "axis": {
+                "class": "position.Position",
+                "x": -1,
+                "y": 1,
+                "z": 0
             },
             "direction_center": {
                 "class": "position.Position",
@@ -178,24 +196,6 @@
                 "z": 0
             },
             "default_rotation": 0.5,
-            "write_index": 1
-        }, {
-            "class": "robot.Segment",
-            "name": "Tip Front Right Segment",
-            "length": 116.0,
-            "axis": {
-                "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": -1
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": 1,
-                "y": 1,
-                "z": 0
-            },
-            "default_rotation": -0.5,
             "write_index": 0
         }]
     }, {
@@ -215,7 +215,7 @@
                 "class": "position.Position",
                 "x": 0,
                 "y": 0,
-                "z": -1
+                "z": 1
             },
             "direction_center": {
                 "class": "position.Position",
@@ -231,15 +231,15 @@
             "length": 57.0,
             "axis": {
                 "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": 1
+                "x": 1,
+                "y": 1,
+                "z": 0
             },
             "direction_center": {
                 "class": "position.Position",
                 "x": 1,
                 "y": -1,
-                "z": 0
+                "z": 1.41421356237
             },
             "default_rotation": 0.5,
             "write_index": 4
@@ -249,9 +249,9 @@
             "length": 116.0,
             "axis": {
                 "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": 1
+                "x": -1,
+                "y": -1,
+                "z": 0
             },
             "direction_center": {
                 "class": "position.Position",
