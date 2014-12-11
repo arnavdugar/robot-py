@@ -44,6 +44,12 @@ class Position:
     def __mul__(self, other):
         return self.x * other.x + self.y * other.y + self.z * other.z
 
+    def cross(self, other):
+        x = self.y * other.z - self.z * other.y
+        y = self.z * other.x - self.x * other.z
+        z = self.x * other.y - self.y * other.x
+        return Position(x, y, z)
+
     @property
     def magnitude(self):
         return math.sqrt(self * self)
@@ -53,6 +59,12 @@ class Position:
         dy = self.y - other.y
         dz = self.z - other.z
         return math.sqrt(dx * dx + dy * dy + dz * dz)
+
+    def normalize(self):
+        magnitude = self.magnitude
+        self.x /= magnitude
+        self.y /= magnitude
+        self.z /= magnitude
 
     @property
     def normalized(self):
@@ -87,6 +99,8 @@ class Position:
         self.x, self.y = x, y
 
     def rotated(self, axis, theta):
+        if theta == 0:
+            return self.copy
         c, s = math.cos(theta / 2), math.sin(theta / 2)
         l = c, axis.x * s, axis.y * s, axis.z * s
         v = 0, self.x, self.y, self.z

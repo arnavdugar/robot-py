@@ -5,6 +5,7 @@ import position
 import display
 import arduino
 import serialize
+import controller
 
 # Connect to Arduino
 print(">>> arduino.connect()")
@@ -16,12 +17,14 @@ r = serialize.load(sys.modules[__name__], "model.txt")
 # Draw Window
 window = display.Display()
 
-# Build Context
-context = {'robot': r, 'arduino': arduino, 'serialize': serialize}
-
-context['l0'] = r.legs[0]
-context['s0'] = r.legs[0].segments[0]
+# Build Controller
+controller.robot = r
+controller.window = window
+controller.arduino = arduino
+controller.serialize = serialize
+controller.filename = "model.txt"
+controller.draw_robot()
 
 # Start Interaction
 
-code.interact(">>> robot = Robot()", local=context)
+code.interact(">>> robot = Robot()", local=controller.__dict__)

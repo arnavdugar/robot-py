@@ -2,7 +2,7 @@ import json
 import code
 
 
-def save(item, filename="model.txt"):
+def save(item, filename):
     try:
         string = build_string(item)
     except Exception as e:
