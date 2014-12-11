@@ -2,6 +2,7 @@ import sys
 import code
 import robot
 import position
+import display
 import arduino
 import serialize
 
@@ -13,7 +14,7 @@ arduino.connect()
 r = serialize.load(sys.modules[__name__], "model.txt")
 
 # Draw Window
-pass
+window = display.Display()
 
 # Build Context
 context = {'robot': r, 'arduino': arduino, 'serialize': serialize}

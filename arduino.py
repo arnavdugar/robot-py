@@ -5,7 +5,7 @@ arduino = None
 
 
 def list_devices():
-    cmd = "ls /dev/*usbmodem*"
+    cmd = "ls /dev/tty.usbmodem* /dev/cu.usbmodem*"
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     data, err = process.communicate()
     if err:

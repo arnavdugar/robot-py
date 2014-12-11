@@ -94,6 +94,7 @@ class Position:
         t, x, y, z = quaternion_multiply(quaternion_multiply(l, v), r)
         return Position(x, y, z)
 
+
 def quaternion_multiply(q1, q2):
     return ((q1[0] * q2[0]) - (q1[1] * q2[1]) - (q1[2] * q2[2]) - (q1[3] * q2[3]),
             (q1[0] * q2[1]) + (q1[1] * q2[0]) + (q1[2] * q2[3]) - (q1[3] * q2[2]),
