@@ -103,15 +103,15 @@
             "length": 57.0,
             "axis": {
                 "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": -1
+                "x": -1,
+                "y": 1,
+                "z": 0
             },
             "direction_center": {
                 "class": "position.Position",
-                "x": -1,
-                "y": -1,
-                "z": 0
+                "x": 0,
+                "y": 0,
+                "z": 1
             },
             "default_rotation": 0.5,
             "write_index": 7
@@ -121,15 +121,15 @@
             "length": 116.0,
             "axis": {
                 "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": -1
+                "x": 1,
+                "y": -1,
+                "z": 0
             },
             "direction_center": {
                 "class": "position.Position",
-                "x": -1,
-                "y": -1,
-                "z": 0
+                "x": 0,
+                "y": 0,
+                "z": 1
             },
             "default_rotation": -0.5,
             "write_index": 8
