@@ -14,13 +14,13 @@ class Display(tkinter.Tk):
         for c in self.canvas:
             c.delete("all")
 
-    def draw_line(self, name, start, end):
+    def draw_line(self, name, start, end, **kwargs):
         for c in self.canvas:
-            c.draw_line(name, start, end)
+            c.draw_line(name, start, end, **kwargs)
 
-    def draw_polygon(self, name, *vertexes):
+    def draw_polygon(self, name, *vertexes, **kwargs):
         for c in self.canvas:
-            c.draw_polygon(name, *vertexes)
+            c.draw_polygon(name, *vertexes, **kwargs)
 
     def update_item(self, name, *vertexes):
         for c in self.canvas:
@@ -29,7 +29,7 @@ class Display(tkinter.Tk):
 
 class Canvas(tkinter.Canvas):
 
-    default_rotation = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 1))
+    default_rotation = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 3, 2))
     final_view = position.Position(0, 0, 1)
 
     def __init__(self, master, index):
@@ -60,14 +60,14 @@ class Canvas(tkinter.Canvas):
             values.append(200 + rotated.y)
         return values
 
-    def draw_line(self, name, start, end):
+    def draw_line(self, name, start, end, **kwargs):
         points = self.compute_points(start, end)
-        self.create_line(*points, tags=name, width=2)
+        self.create_line(*points, tags=name, width=2, **kwargs)
 
-    def draw_polygon(self, name, *vertexes):
+    def draw_polygon(self, name, *vertexes, **kwargs):
         points = self.compute_points(*vertexes)
-        self.create_polygon(*points, tags=name, outline='black', fill='#ccc', width=2, activefill='#aaa')
+        self.create_polygon(*points, tags=name, outline='black', fill='#ccc', width=2, activefill='#aaa', **kwargs)
 
     def update_item(self, name, *vertexes):
         points = self.compute_points(*vertexes)
-        self.coords(name, points)
+        self.coords(name, tuple(points))
