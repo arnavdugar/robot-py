@@ -25,6 +25,7 @@ controller.window = window
 controller.arduino = arduino
 controller.serialize = serialize
 controller.filename = "model.txt"
+controller.init()
 controller.draw_robot()
 
 # Start Interaction

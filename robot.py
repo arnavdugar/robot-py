@@ -25,7 +25,7 @@ class Leg:
         pass
 
     def __repr__(self):
-        return "[Leg %d]" % self.index
+        return "[%s]" % self.name
 
     @property
     def position(self):
@@ -51,7 +51,7 @@ class Segment:
         self.display_listener = None
 
     def __repr__(self):
-        return "[Segment %d, %d]" % (self.parent.index, self.index)
+        return "[%s]" % self.name
 
     @property
     def rotation(self):

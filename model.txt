@@ -8,7 +8,8 @@
     },
     "legs": [{
         "class": "insect.Leg",
-        "model": "insect-ccw.txt",
+        "model": "insect.txt",
+        "orientation": "counterclockwise",
         "name_base": "Front Left",
         "start_position": {
             "class": "position.Position",
@@ -26,7 +27,8 @@
         "write_indexes": [9, 10, 11]
     }, {
         "class": "insect.Leg",
-        "model": "insect-cw.txt",
+        "model": "insect.txt",
+        "orientation": "clockwise",
         "name_base": "Back Left",
         "start_position": {
             "class": "position.Position",
@@ -44,7 +46,8 @@
         "write_indexes": [6, 7, 8]
     }, {
         "class": "insect.Leg",
-        "model": "insect-ccw.txt",
+        "model": "insect.txt",
+        "orientation": "counterclockwise",
         "name_base": "Back Right",
         "start_position": {
             "class": "position.Position",
@@ -62,7 +65,8 @@
         "write_indexes": [5, 4, 3]
     }, {
         "class": "insect.Leg",
-        "model": "insect-cw.txt",
+        "model": "insect.txt",
+        "orientation": "clockwise",
         "name_base": "Front Right",
         "start_position": {
             "class": "position.Position",

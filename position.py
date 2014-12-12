@@ -74,6 +74,11 @@ class Position:
         z = self.z / magnitude
         return Position(x, y, z)
 
+    def scale(self, scalor):
+        self.x *= scalor
+        self.y *= scalor
+        self.z *= scalor
+
     def scaled(self, scalor):
         x = self.x * scalor
         y = self.y * scalor
@@ -82,6 +87,9 @@ class Position:
 
     def angle(self, other):
         return math.acos((self * other) / math.sqrt((self * self) * (other * other)))
+
+    def signed_angle(self, other):
+        return math.asin((self.cross(other)).magnitude/(self.magnitude * other.magnitude))
 
     def rotate_x(self, angle):
         y = self.y * math.cos(angle) - self.z * math.sin(angle)

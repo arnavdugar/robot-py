@@ -27,6 +27,11 @@ class Display(tkinter.Tk):
         for c in self.canvas:
             c.update_item(name, *vertexes)
 
+    def draw_coordinates(self):
+        self.draw_line('x-axis', position.Position(0, 0, 0), position.Position(200, 0, 0), dash=(2, 4), fill='red')
+        self.draw_line('y-axis', position.Position(0, 0, 0), position.Position(0, 200, 0), dash=(2, 4), fill='green')
+        self.draw_line('z-axis', position.Position(0, 0, 0), position.Position(0, 0, 200), dash=(2, 4), fill='blue')
+
 
 class Canvas(tkinter.Canvas):
 
