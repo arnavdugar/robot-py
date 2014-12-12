@@ -1,0 +1,46 @@
+[{
+    "class": "robot.Segment",
+    "axis": {
+        "class": "position.Position",
+        "x": 0,
+        "y": 0,
+        "z": 1
+    },
+    "direction_center": {
+        "class": "position.Position",
+        "x": 1,
+        "y": 0,
+        "z": 0
+    },
+    "default_rotation": 0.0
+}, {
+    "class": "robot.Segment",
+    "axis": {
+        "class": "position.Position",
+        "x": 0,
+        "y": 1,
+        "z": 0
+    },
+    "direction_center": {
+        "class": "position.Position",
+        "x": 1,
+        "y": 0,
+        "z": 1
+    },
+    "default_rotation": 0.5
+}, {
+    "class": "robot.Segment",
+    "axis": {
+        "class": "position.Position",
+        "x": 0,
+        "y": -1,
+        "z": 0
+    },
+    "direction_center": {
+        "class": "position.Position",
+        "x": 1,
+        "y": 0,
+        "z": 0
+    },
+    "default_rotation": -0.5
+}]
