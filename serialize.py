@@ -1,6 +1,8 @@
 import json
 import code
 
+package = None
+
 
 def save(item, filename):
     try:
@@ -31,13 +33,13 @@ def build_string(item, indent='    ', indent_count=0):
         return str(item)
 
 
-def load(package, filename):
+def load(filename):
     with open(filename, 'r') as f:
         data = json.loads(f.read())
-    return build_object(package, data)
+    return build_object(data)
 
 
-def build_object(package, data, parent=None):
+def build_object(data, parent=None):
     if isinstance(data, dict):
         class_name = package
         for part in data["class"].split('.'):
@@ -45,7 +47,7 @@ def build_object(package, data, parent=None):
         item = class_name()
         item.parent = parent
         for key in data:
-            child = build_object(package, data[key], item)
+            child = build_object(data[key], item)
             try:
                 setattr(item, key, child)
             except AttributeError as e:
@@ -57,7 +59,7 @@ def build_object(package, data, parent=None):
     elif isinstance(data, (list, tuple)):
         item, index, previous = [], 0, None
         for child_data in data:
-            child = build_object(package, child_data, parent)
+            child = build_object(child_data, parent)
             item.append(child)
             if hasattr(child, "__dict__"):
                 child.index = index

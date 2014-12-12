@@ -13,7 +13,7 @@ def draw_robot():
             window.draw_line(segment.name + ' axis', segment.global_start_position, segment.global_start_position +
                              segment.global_axis.scaled(15.0), fill='#900')
             window.draw_line(segment.name, segment.global_start_position, segment.global_end_position)
-    window.draw_polygon('robot', *[robot.legs[i].global_start_position for i in (0, 1, 3, 2)])
+    window.draw_polygon('robot', *[leg.global_start_position for leg in robot.legs])
     window.draw_line('x-axis', position.Position(0, 0, 0), position.Position(200, 0, 0), dash=(2, 4), fill='red')
     window.draw_line('y-axis', position.Position(0, 0, 0), position.Position(0, 200, 0), dash=(2, 4), fill='green')
     window.draw_line('z-axis', position.Position(0, 0, 0), position.Position(0, 0, 200), dash=(2, 4), fill='blue')

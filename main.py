@@ -2,6 +2,7 @@ import sys
 import code
 import robot
 import position
+import insect
 import display
 import arduino
 import serialize
@@ -12,7 +13,8 @@ print(">>> arduino.connect()")
 arduino.connect()
 
 # Load Robot Data
-r = serialize.load(sys.modules[__name__], "model.txt")
+serialize.package = sys.modules[__name__]
+r = serialize.load("model.txt")
 
 # Draw Window
 window = display.Display()
