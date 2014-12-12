@@ -7,205 +7,67 @@
         "z": 0
     },
     "legs": [{
-        "class": "robot.Leg",
-        "name": "Front Left Leg",
+        "class": "insect.Leg",
+        "model": "insect-ccw.txt",
+        "name_base": "Front Left",
         "start_position": {
             "class": "position.Position",
             "x": -53.5,
             "y": 53.5,
             "z": 0
         },
-        "segments": [{
-            "class": "robot.Segment",
-            "name": "Base Front Left Segment",
-            "length": 24.0,
-            "axis": {
-                "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": 1
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": -1,
-                "y": 1,
-                "z": 0
-            },
-            "default_rotation": 0.0,
-            "write_index": 9
-        }, {
-            "class": "robot.Segment",
-            "name": "Middle Front Left Segment",
-            "length": 57.0,
-            "axis": {
-                "class": "position.Position",
-                "x": -1,
-                "y": -1,
-                "z": 0
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": -1,
-                "y": 1,
-                "z": 1.41421356237
-            },
-            "default_rotation": 0.5,
-            "write_index": 10
-        }, {
-            "class": "robot.Segment",
-            "name": "Tip Front Left Segment",
-            "length": 116.0,
-            "axis": {
-                "class": "position.Position",
-                "x": 1,
-                "y": 1,
-                "z": 0
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": -1,
-                "y": 1,
-                "z": 0
-            },
-            "default_rotation": -0.5,
-            "write_index": 11
-        }]
+        "leg_direction": {
+            "class": "position.Position",
+            "x": -1,
+            "y": 1,
+            "z": 0
+        },
+        "lengths": [24.0, 57.0, 116.0],
+        "write_indexes": [9, 10, 11]
     }, {
-        "class": "robot.Leg",
-        "name": "Back Left Leg",
+        "class": "insect.Leg",
+        "model": "insect-cw.txt",
+        "name_base": "Back Left",
         "start_position": {
             "class": "position.Position",
             "x": -53.5,
             "y": -53.5,
             "z": 0
         },
-        "segments": [{
-            "class": "robot.Segment",
-            "name": "Base Back Left Segment",
-            "length": 24.0,
-            "axis": {
-                "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": -1
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": -1,
-                "y": -1,
-                "z": 0
-            },
-            "default_rotation": 0.0,
-            "write_index": 6
-        }, {
-            "class": "robot.Segment",
-            "name": "Middle Back Left Segment",
-            "length": 57.0,
-            "axis": {
-                "class": "position.Position",
-                "x": -1,
-                "y": 1,
-                "z": 0
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": -1,
-                "y": -1,
-                "z": 1.41421356237
-            },
-            "default_rotation": -0.5,
-            "write_index": 7
-        }, {
-            "class": "robot.Segment",
-            "name": "Tip Back Left Segment",
-            "length": 116.0,
-            "axis": {
-                "class": "position.Position",
-                "x": 1,
-                "y": -1,
-                "z": 0
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": -1,
-                "y": -1,
-                "z": 0
-            },
-            "default_rotation": 0.5,
-            "write_index": 8
-        }]
+        "leg_direction": {
+            "class": "position.Position",
+            "x": -1,
+            "y": -1,
+            "z": 0
+        },
+        "lengths": [24.0, 57.0, 116.0],
+        "write_indexes": [6, 7, 8]
     }, {
-        "class": "robot.Leg",
-        "name": "Back Right Leg",
+        "class": "insect.Leg",
+        "model": "insect-ccw.txt",
+        "name_base": "Back Right",
         "start_position": {
             "class": "position.Position",
             "x": 53.5,
             "y": -53.5,
             "z": 0
         },
-        "segments": [{
-            "class": "robot.Segment",
-            "name": "Base Back Right Segment",
-            "length": 24.0,
-            "axis": {
-                "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": 1
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": 1,
-                "y": -1,
-                "z": 0
-            },
-            "default_rotation": 0.0,
-            "write_index": 5
-        }, {
-            "class": "robot.Segment",
-            "name": "Middle Back Right Segment",
-            "length": 57.0,
-            "axis": {
-                "class": "position.Position",
-                "x": 1,
-                "y": 1,
-                "z": 0
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": 1,
-                "y": -1,
-                "z": 1.41421356237
-            },
-            "default_rotation": 0.5,
-            "write_index": 4
-        }, {
-            "class": "robot.Segment",
-            "name": "Tip Back Right Segment",
-            "length": 116.0,
-            "axis": {
-                "class": "position.Position",
-                "x": -1,
-                "y": -1,
-                "z": 0
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": 1,
-                "y": -1,
-                "z": 0
-            },
-            "default_rotation": -0.5,
-            "write_index": 3
-        }]
+        "leg_direction": {
+            "class": "position.Position",
+            "x": 1,
+            "y": -1,
+            "z": 0
+        },
+        "lengths": [24.0, 57.0, 116.0],
+        "write_indexes": [5, 4, 3]
     }, {
         "class": "insect.Leg",
-        "model": "insect.txt",
-        "name_base": "Extra",
+        "model": "insect-cw.txt",
+        "name_base": "Front Right",
         "start_position": {
             "class": "position.Position",
-            "x": 37.8,
-            "y": 0,
+            "x": 53.5,
+            "y": 53.5,
             "z": 0
         },
         "leg_direction": {
@@ -215,70 +77,6 @@
             "z": 0
         },
         "lengths": [24.0, 57.0, 116.0],
-        "write_indexes": [12, 13, 14]
-    }, {
-        "class": "robot.Leg",
-        "name": "Front Right Leg",
-        "start_position": {
-            "class": "position.Position",
-            "x": 53.5,
-            "y": 53.5,
-            "z": 0
-        },
-        "segments": [{
-            "class": "robot.Segment",
-            "name": "Base Front Right Segment",
-            "length": 24.0,
-            "axis": {
-                "class": "position.Position",
-                "x": 0,
-                "y": 0,
-                "z": -1
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": 1,
-                "y": 1,
-                "z": 0
-            },
-            "default_rotation": 0.0,
-            "write_index": 2
-        }, {
-            "class": "robot.Segment",
-            "name": "Middle Front Right Segment",
-            "length": 57.0,
-            "axis": {
-                "class": "position.Position",
-                "x": 1,
-                "y": -1,
-                "z": 0
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": 1,
-                "y": 1,
-                "z": 1.41421356237
-            },
-            "default_rotation": -0.5,
-            "write_index": 1
-        }, {
-            "class": "robot.Segment",
-            "name": "Tip Front Right Segment",
-            "length": 116.0,
-            "axis": {
-                "class": "position.Position",
-                "x": -1,
-                "y": 1,
-                "z": 0
-            },
-            "direction_center": {
-                "class": "position.Position",
-                "x": 1,
-                "y": 1,
-                "z": 0
-            },
-            "default_rotation": 0.5,
-            "write_index": 0
-        }]
+        "write_indexes": [2, 1, 0]
     }]
 }
