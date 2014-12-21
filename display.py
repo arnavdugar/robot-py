@@ -52,7 +52,7 @@ class Canvas(tkinter.Canvas):
     @rotation3d.setter
     def rotation3d(self, rotation):
         self._rotation3d = rotation
-        self.angle = -Canvas.final_view.angle(rotation)
+        self.angle = -Canvas.final_view.interior_angle(rotation)
         self.axis = Canvas.final_view.cross(rotation)
         magnitude = self.axis.magnitude
         if magnitude == 0:

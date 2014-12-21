@@ -1,5 +1,8 @@
 import subprocess
 import serial
+import struct
+import multiprocessing
+import time
 
 arduino = None
 
@@ -18,7 +21,11 @@ def select_device(data):
     for index in range(len(data)):
         print("%d: %s" % (index + 1, data[index]))
     while True:
-        i = int(input("Select a USB port: "))
+        try:
+            i = int(input("Select a USB port: "))
+        except ValueError:
+            print("Invalid Input!")
+            continue
         if i is 0:
             return
         elif i > 0 and i <= len(data):
@@ -45,13 +52,36 @@ def connect(device=None, speed=115200):
         device = load_device()
     if not device:
         return
-    arduino = serial.Serial(device, speed)
+    arduino = serial.Serial(device, speed, timeout=0)
+    arduino.listen_thread = multiprocessing.Process(target=listen)
+    arduino.flushInput()
+    arduino.listen_thread.start()
 
 
-def write(value):
+def listen():
+    stream = b''
+    while True:
+        next = arduino.read()
+        if len(next) == 0:
+            time.sleep(0.2)
+            continue
+        start = 0
+        for i in range(len(next)):
+            if chr(next[i]) == '\n':
+                print('\n', (stream + next[start:i]).decode("utf-8"), '\n>>> ', end='')
+                stream, start = b'', i + 1
+        stream += next[start:]
+
+
+def build_data(header, values):
+    return struct.pack('!c%dH' % len(values), header, *values)
+
+
+def write(data):
     global arduino
     if arduino:
-        arduino.write(value)
+        arduino.write(data)
+        arduino.flush()
 
 
 def close():

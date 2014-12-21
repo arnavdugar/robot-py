@@ -15,12 +15,12 @@ class Leg(robot.Leg):
         assert len(self.segments) == 3
         initial_direction = self.segments[0].direction_center
         if self.orientation == 'counterclockwise':
-            self.segments[1].axis.scale(-1)
+            self.segments[1].axis *= -1
             self.segments[1].default_rotation *= -1
-            self.segments[2].axis.scale(-1)
+            self.segments[2].axis *= -1
             self.segments[2].default_rotation *= -1
         axis = initial_direction.cross(self.leg_direction)
-        angle = initial_direction.angle(self.leg_direction)
+        angle = initial_direction.interior_angle(self.leg_direction)
         for i in range(len(self.segments)):
             segment = self.segments[i]
             self.init_segment(segment, i, axis, angle)
@@ -44,7 +44,7 @@ class Leg(robot.Leg):
         v1 = position - axis.scaled(d1)
         v1 -= start - axis.scaled(d3)
         v2 = center - axis.scaled(d2)
-        if v1.angle(v2) > math.pi/2:
+        if v1.interior_angle(v2) > math.pi/2:
             v1 = v1.scaled(-1)
         a = math.asin(v2.cross(v1) * axis / (v1.magnitude * v2.magnitude))
         p = center.scaled(segment.length).rotated(axis, a)
@@ -53,8 +53,8 @@ class Leg(robot.Leg):
     def compute_remaining(self, position, p1, s1, s2):
         local = position - p1
         center, base = s1.direction_center_normalized, s1.previous
-        center = center.rotated(base.axis_normalized, base.angle)
-        center_angle = center.angle(local)
+        center = center.rotated(base.axis_normalized, base.interior_angle)
+        center_angle = center.interior_angle(local)
 
         distance = local.magnitude
         angle = s1.length * s1.length + s2.length * s2.length - distance * distance

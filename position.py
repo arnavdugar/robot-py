@@ -1,17 +1,29 @@
+import ctypes
 import math
 
+lib = ctypes.CDLL('./lib/position.so')
 
-class Position:
+lib.vec3d_dot.restype = ctypes.c_double
+lib.vec3d_magnitude.restype = ctypes.c_double
+lib.vec3d_distance.restype = ctypes.c_double
+lib.vec3d_interior_angle.restype = ctypes.c_double
+lib.vec3d_angle.restype = ctypes.c_double
 
-    properties = ("x", "y", "z")
 
-    def __init__(self, x=0, y=0, z=0):
-        self.x = x
-        self.y = y
-        self.z = z
+class Position(ctypes.Structure):
+
+    _fields_ = [('x', ctypes.c_double),
+                ('y', ctypes.c_double),
+                ('z', ctypes.c_double)]
+
+    properties = ('x', 'y', 'z')
+
+    @property
+    def pointer(self):
+        return ctypes.byref(self)
 
     def __repr__(self):
-        return "(%g, %g, %g)" % (self.x, self.y, self.z)
+        return '(%g, %g, %g)' % (self.x, self.y, self.z)
 
     @property
     def copy(self):
@@ -42,7 +54,19 @@ class Position:
         return self
 
     def __mul__(self, other):
-        return self.x * other.x + self.y * other.y + self.z * other.z
+        if type(other) == Position:
+            return lib.vec3d_dot(self.pointer, other.pointer)
+        else:
+            x = self.x * other
+            y = self.y * other
+            z = self.z * other
+            return Position(x, y, z)
+
+    def __imul__(self, other):
+        x = self.x * other
+        y = self.y * other
+        z = self.z * other
+        return Position(x, y, z)
 
     def cross(self, other):
         x = self.y * other.z - self.z * other.y
@@ -74,51 +98,22 @@ class Position:
         z = self.z / magnitude
         return Position(x, y, z)
 
-    def scale(self, scalor):
-        self.x *= scalor
-        self.y *= scalor
-        self.z *= scalor
-
-    def scaled(self, scalor):
-        x = self.x * scalor
-        y = self.y * scalor
-        z = self.z * scalor
-        return Position(x, y, z)
+    def interior_angle(self, other):
+        return lib.vec3d_interior_angle(self.pointer, other.pointer)
 
     def angle(self, other):
-        return math.acos((self * other) / math.sqrt((self * self) * (other * other)))
-
-    def signed_angle(self, other):
-        return math.asin((self.cross(other)).magnitude/(self.magnitude * other.magnitude))
+        return lib.vec3d_angle(self.pointer, other.pointer)
 
     def rotate_x(self, angle):
-        y = self.y * math.cos(angle) - self.z * math.sin(angle)
-        z = self.y * math.sin(angle) + self.z * math.cos(angle)
-        self.y, self.z = y, z
+        return lib.vec3d_irotate_x(self.pointer, ctypes.c_double(angle))
 
     def rotate_y(self, angle):
-        z = self.z * math.cos(angle) - self.x * math.sin(angle)
-        x = self.z * math.sin(angle) + self.x * math.cos(angle)
-        self.z, self.x = z, x
+        return lib.vec3d_irotate_y(self.pointer, ctypes.c_double(angle))
 
     def rotate_z(self, angle):
-        x = self.x * math.cos(angle) - self.y * math.sin(angle)
-        y = self.x * math.sin(angle) + self.y * math.cos(angle)
-        self.x, self.y = x, y
+        return lib.vec3d_irotate_z(self.pointer, ctypes.c_double(angle))
 
-    def rotated(self, axis, theta):
-        if theta == 0:
-            return self.copy
-        c, s = math.cos(theta / 2), math.sin(theta / 2)
-        l = c, axis.x * s, axis.y * s, axis.z * s
-        v = 0, self.x, self.y, self.z
-        r = c, -axis.x * s, -axis.y * s, -axis.z * s
-        t, x, y, z = quaternion_multiply(quaternion_multiply(l, v), r)
-        return Position(x, y, z)
-
-
-def quaternion_multiply(q1, q2):
-    return ((q1[0] * q2[0]) - (q1[1] * q2[1]) - (q1[2] * q2[2]) - (q1[3] * q2[3]),
-            (q1[0] * q2[1]) + (q1[1] * q2[0]) + (q1[2] * q2[3]) - (q1[3] * q2[2]),
-            (q1[0] * q2[2]) - (q1[1] * q2[3]) + (q1[2] * q2[0]) + (q1[3] * q2[1]),
-            (q1[0] * q2[3]) + (q1[1] * q2[2]) - (q1[2] * q2[1]) + (q1[3] * q2[0]))
+    def rotated(self, axis, angle):
+        p = Position()
+        lib.vec3d_rotate(p.pointer, self.pointer, axis.pointer, ctypes.c_double(angle))
+        return p

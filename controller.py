@@ -1,5 +1,6 @@
 import code
 import position
+import arduino
 
 robot, window = None, None
 
@@ -35,9 +36,9 @@ def draw_robot():
 def draw_leg(leg):
     for segment in leg.segments:
         #window.draw_line(segment.name + ' center', segment.global_start_position, segment.global_start_position +
-                         #segment.global_direction_center.scaled(segment.length), fill='#ccc')
+                         #segment.global_direction_center * segment.length, fill='#ccc')
         window.draw_line(segment.name + ' axis', segment.global_start_position, segment.global_start_position +
-                         segment.global_axis.scaled(15.0), fill='#900')
+                         segment.global_axis * 15, fill='#900')
         window.draw_line(segment.name, segment.global_start_position, segment.global_end_position)
 
 
@@ -50,10 +51,22 @@ def set_rotation(l, s, rotation):
 
 def set_angle(l, s, angle):
     segment = robot.legs[l].segments[s]
-    segment.angle = angle
+    segment.interior_angle = angle
     draw_robot()
     #window.update_item(segment.name, segment.global_start_position, segment.global_end_position)
 
 
 def values():
     return [[segment.value for segment in leg.segments] for leg in robot.legs]
+
+
+def commit():
+    values, indexes = [], []
+    for leg in robot.legs:
+        values.extend(segment.value for segment in leg.segments)
+        indexes.extend(segment.write_index for segment in leg.segments)
+    data = [0 for _ in range(len(values))]
+    for i in range(len(values)):
+        data[indexes[i]] = values[i]
+    data = arduino.build_data(b'\xff', data)
+    arduino.write(data)

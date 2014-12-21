@@ -1,4 +1,3 @@
-import position
 import math
 
 
@@ -101,7 +100,7 @@ class Segment:
 
     @property
     def position(self):
-        return self.global_direction_center.scaled(self.length).rotated(self.global_axis, self.angle)
+        return (self.global_direction_center * self.length).rotated(self.global_axis, self.angle)
 
     @property
     def global_start_position(self):
