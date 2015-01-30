@@ -29,5 +29,4 @@ controller.init()
 controller.draw_robot()
 
 # Start Interaction
-
 code.interact(">>> robot = Robot()", local=controller.__dict__)

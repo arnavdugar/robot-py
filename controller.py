@@ -1,6 +1,4 @@
-import code
 import position
-import arduino
 
 robot, window = None, None
 
@@ -16,13 +14,21 @@ def callback1(event):
     x, y = event.x - 200, 200 - event.y
     for i in range(len(robot.legs)):
         l = robot.legs[i]
-        a, p = l.compute_base(position.Position(x, y, 0), l.segments[0])
+        a, p = l.compute_base(position.Position(x, y, 0))
         set_angle(i, 0, a)
 
 def callback2(event):
-    x, y = event.x - 200, 200 - event.y
-    print(x, y)
-    pass
+    r, z = abs(event.x - 200), 200 - event.y
+    for i in range(len(robot.legs)):
+        l = robot.legs[i]
+        start = l.segments[0].global_end_position
+        position = l.global_end_position.copy
+        position.z = 0
+        position.normalize()
+        position *= r
+        position.z = z
+        a, p = l.compute_remaining(position, start)
+        set_angle(i, 1, a)
 
 
 def draw_robot():
@@ -35,8 +41,8 @@ def draw_robot():
 
 def draw_leg(leg):
     for segment in leg.segments:
-        #window.draw_line(segment.name + ' center', segment.global_start_position, segment.global_start_position +
-                         #segment.global_direction_center * segment.length, fill='#ccc')
+        window.draw_line(segment.name + ' center', segment.global_start_position, segment.global_start_position +
+                         segment.global_direction_center * segment.length, fill='#ccc')
         window.draw_line(segment.name + ' axis', segment.global_start_position, segment.global_start_position +
                          segment.global_axis * 15, fill='#900')
         window.draw_line(segment.name, segment.global_start_position, segment.global_end_position)
@@ -51,13 +57,20 @@ def set_rotation(l, s, rotation):
 
 def set_angle(l, s, angle):
     segment = robot.legs[l].segments[s]
-    segment.interior_angle = angle
+    segment.angle = angle
     draw_robot()
     #window.update_item(segment.name, segment.global_start_position, segment.global_end_position)
 
 
 def values():
     return [[segment.value for segment in leg.segments] for leg in robot.legs]
+
+
+def reset():
+    for leg in robot.legs:
+        for segment in leg.segments:
+            segment.rotation = segment.default_rotation
+    draw_robot()
 
 
 def commit():

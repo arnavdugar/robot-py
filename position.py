@@ -55,7 +55,7 @@ class Position(ctypes.Structure):
 
     def __mul__(self, other):
         if type(other) == Position:
-            return lib.vec3d_dot(self.pointer, other.pointer)
+            return self.x * other.x + self.y * other.y + self.z * other.z
         else:
             x = self.x * other
             y = self.y * other
@@ -66,6 +66,12 @@ class Position(ctypes.Structure):
         x = self.x * other
         y = self.y * other
         z = self.z * other
+        return Position(x, y, z)
+
+    def __neg__(self):
+        x = self.x * -1
+        y = self.y * -1
+        z = self.z * -1
         return Position(x, y, z)
 
     def cross(self, other):
@@ -99,19 +105,28 @@ class Position(ctypes.Structure):
         return Position(x, y, z)
 
     def interior_angle(self, other):
-        return lib.vec3d_interior_angle(self.pointer, other.pointer)
+        return math.acos((self * other) / math.sqrt((self * self) * (other * other)))
 
-    def angle(self, other):
-        return lib.vec3d_angle(self.pointer, other.pointer)
+    def angle(self, other, normal):
+        angle = self.interior_angle(other)
+        if (self.cross(other)) * normal < 0:
+            angle *= -1
+        return angle
 
     def rotate_x(self, angle):
-        return lib.vec3d_irotate_x(self.pointer, ctypes.c_double(angle))
+        y = self.y * math.cos(angle) - self.z * math.sin(angle)
+        z = self.y * math.sin(angle) + self.z * math.cos(angle)
+        self.y, self.z = y, z
 
     def rotate_y(self, angle):
-        return lib.vec3d_irotate_y(self.pointer, ctypes.c_double(angle))
+        z = self.z * math.cos(angle) - self.x * math.sin(angle)
+        x = self.z * math.sin(angle) + self.x * math.cos(angle)
+        self.z, self.x = z, x
 
     def rotate_z(self, angle):
-        return lib.vec3d_irotate_z(self.pointer, ctypes.c_double(angle))
+        x = self.x * math.cos(angle) - self.y * math.sin(angle)
+        y = self.x * math.sin(angle) + self.y * math.cos(angle)
+        self.x, self.y = x, y
 
     def rotated(self, axis, angle):
         p = Position()

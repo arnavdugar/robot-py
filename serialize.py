@@ -36,41 +36,49 @@ def build_string(item, indent='    ', indent_count=0):
 def load(filename):
     with open(filename, 'r') as f:
         data = json.loads(f.read())
-    return build_object(data)
+    return build_item(data)
 
 
-def build_object(data, parent=None):
+def build_item(data, parent=None):
     if isinstance(data, dict):
-        class_name = package
-        for part in data["class"].split('.'):
-            class_name = getattr(class_name, part)
-        item = class_name()
-        item.parent = parent
-        for key in data:
-            child = build_object(data[key], item)
-            try:
-                setattr(item, key, child)
-            except AttributeError as e:
-                code.interact(local=locals())
-                print(e, type(item), key, child)
-        if hasattr(item, "init"):
-            item.init()
-        return item
+        return build_object(data, parent)
     elif isinstance(data, (list, tuple)):
-        item, index, previous = [], 0, None
-        for child_data in data:
-            child = build_object(child_data, parent)
-            item.append(child)
-            if hasattr(child, "__dict__"):
-                child.index = index
-                child.siblings = item
-                child.previous = previous
-                if previous:
-                    previous.next = child
-            previous = child
-            index += 1
-        if hasattr(child, "__dict__"):
-            child.next = None
-        return tuple(item)
+        return build_list(data, parent)
     else:
         return data
+
+
+def build_object(data, parent):
+    class_name = package
+    for part in data["class"].split('.'):
+        class_name = getattr(class_name, part)
+    item = class_name()
+    item.parent = parent
+    for key in data:
+        child = build_item(data[key], item)
+        try:
+            setattr(item, key, child)
+        except AttributeError as e:
+            code.interact(local=locals())
+            print(e, type(item), key, child)
+    if hasattr(item, "init"):
+        item.init()
+    return item
+
+
+def build_list(data, parent):
+    item, index, previous = [], 0, None
+    for child_data in data:
+        child = build_item(child_data, parent)
+        item.append(child)
+        if hasattr(child, "__dict__"):
+            child.index = index
+            child.siblings = item
+            child.previous = previous
+            if previous:
+                previous.next = child
+        previous = child
+        index += 1
+    if hasattr(child, "__dict__"):
+        child.next = None
+    return tuple(item)

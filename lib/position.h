@@ -36,7 +36,7 @@ number_t vec3d_distance(vec3d_t *a, vec3d_t *b);
 
 double vec3d_interior_angle(vec3d_t *a, vec3d_t *b);
 
-double vec3d_angle(vec3d_t *a, vec3d_t *b);
+double vec3d_angle(vec3d_t *a, vec3d_t *b, vec3d_t *normal);
 
 void vec3d_rotate_x(vec3d_t *a, vec3d_t *b, double angle);
 

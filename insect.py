@@ -1,6 +1,5 @@
 import robot
 import serialize
-import position
 import math
 
 
@@ -15,6 +14,7 @@ class Leg(robot.Leg):
         assert len(self.segments) == 3
         initial_direction = self.segments[0].direction_center
         if self.orientation == 'counterclockwise':
+            self.segments[0].axis *= -1
             self.segments[1].axis *= -1
             self.segments[1].default_rotation *= -1
             self.segments[2].axis *= -1
@@ -36,36 +36,29 @@ class Leg(robot.Leg):
         segment.direction_center = segment.direction_center.rotated(axis, angle)
         segment.init()
 
-    def compute_base(self, position, segment):
+    def compute_base(self, position):
+        segment = self.segments[0]
         axis = segment.global_axis
         center = segment.global_direction_center
         start = segment.global_start_position
         d1, d2, d3 = position * axis, center * axis, start * axis
-        v1 = position - axis.scaled(d1)
-        v1 -= start - axis.scaled(d3)
-        v2 = center - axis.scaled(d2)
+        v1 = position - (axis * d1)
+        v1 -= start - (axis * d3)
+        v2 = center - (axis * d2)
         if v1.interior_angle(v2) > math.pi/2:
-            v1 = v1.scaled(-1)
+            v1 *= -1
         a = math.asin(v2.cross(v1) * axis / (v1.magnitude * v2.magnitude))
-        p = center.scaled(segment.length).rotated(axis, a)
+        p = (center * segment.length).rotated(axis, a)
         return a, p
 
-    def compute_remaining(self, position, p1, s1, s2):
-        local = position - p1
-        center, base = s1.direction_center_normalized, s1.previous
-        center = center.rotated(base.axis_normalized, base.interior_angle)
-        center_angle = center.interior_angle(local)
-
-        distance = local.magnitude
-        angle = s1.length * s1.length + s2.length * s2.length - distance * distance
-        angle /= 2 * s1.length * s2.length
-        if angle < -1 or angle > 1:
-            print("Error: Cannot Reach Location!")
-            return
-
-        pass
+    def compute_remaining(self, position, start):
+        s1, s2 = self.segments[1:3]
+        v = position - start
+        return s1.direction_center.angle(v), 0.0
 
     def move_to(self, position):
-        a1, p1 = self.compute_base(position, self.segments[0])
-        self.compute_remaining(position, p1, self.segments[1], self.segments[2])
-        return a1
+        a0, p0 = self.compute_base(position)
+        a1, a2 = self.compute_remaining(position, p0)
+        self.segments[0].angle = a1
+        self.segments[1].angle = a2
+        self.segments[2].angle = a2

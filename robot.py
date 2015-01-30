@@ -36,7 +36,7 @@ class Leg:
 
     @property
     def global_end_position(self):
-        return self.legs[len(self.legs) - 1].end_position
+        return self.segments[len(self.segments) - 1].global_end_position
 
 
 class Segment:

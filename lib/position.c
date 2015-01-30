@@ -1,6 +1,5 @@
 #include "position.h"
 #include "math.h"
-#include <stdio.h>
 
 void vec3d_copy(vec3d_t *a, vec3d_t *b) {
     a->x = b->x;
@@ -89,11 +88,14 @@ double vec3d_interior_angle(vec3d_t *a, vec3d_t *b) {
     return acos(dot / norm);
 }
 
-double vec3d_angle(vec3d_t *a, vec3d_t *b) {
+double vec3d_angle(vec3d_t *a, vec3d_t *b, vec3d_t *normal) {
+    double angle = vec3d_interior_angle(a, b);
     vec3d_t cross;
     vec3d_cross(&cross, a, b);
-    number_t dot = vec3d_dot(a, b);
-    return atan2(vec3d_magnitude(&cross), dot);
+    if(vec3d_dot(&cross, normal) < 0) {
+        angle *= -1;
+    }
+    return angle;
 }
 
 void vec3d_rotate_x(vec3d_t *a, vec3d_t *b, double angle) {
