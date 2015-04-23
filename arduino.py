@@ -1,7 +1,6 @@
-import subprocess
 import serial
-import struct
-import multiprocessing
+import subprocess
+import threading
 import time
 
 arduino = None
@@ -48,29 +47,64 @@ def load_device():
 
 def connect(device=None, speed=115200):
     global arduino
+    if not device and arduino:
+        reconnect()
+        return
     if not device:
         device = load_device()
     if not device:
         return
     arduino = serial.Serial(device, speed, timeout=0)
-    arduino.listen_thread = multiprocessing.Process(target=listen)
+    initialize()
+
+
+def reconnect():
+    try:
+        arduino.open()
+    except serial.SerialException:
+        arduino.close()
+        arduino.open()
+    initialize()
+
+
+def initialize():
+    global arduino
     arduino.flushInput()
-    arduino.listen_thread.start()
+    if not (hasattr(arduino, 'listen_thread') and arduino.listen_thread and arduino.listen_thread.is_alive()):
+        arduino.listen_thread = Listener()
+        arduino.listen_thread.start()
+        print('Starting Listener.')
 
 
-def listen():
-    stream = b''
-    while True:
-        next = arduino.read()
-        if len(next) == 0:
-            time.sleep(0.2)
-            continue
-        start = 0
-        for i in range(len(next)):
-            if chr(next[i]) == '\n':
-                print('\n', (stream + next[start:i]).decode("utf-8"), '\n>>> ', end='')
-                stream, start = b'', i + 1
-        stream += next[start:]
+
+class Listener(threading.Thread):
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.name = 'Listener'
+
+    def run(self):
+        global arduino
+        stream = b''
+        while True:
+            if not arduino.isOpen():
+                print('\rTerminating Listener: Arudino Closed.\n>>> ', end='')
+                return
+            try:
+                next = arduino.read()
+            except:
+                print('\rError Reading: Closing Connection.')
+                arduino.close()
+                continue
+            if len(next) == 0:
+                time.sleep(0.2)
+                continue
+            start = 0
+            for i in range(len(next)):
+                if chr(next[i]) == '\n':
+                    print('\r%s\n>>> ' % (stream + next[start:i]).decode("utf-8"), end='')
+                    stream, start = b'', i + 1
+            stream += next[start:]
 
 
 def build_data(header, values):
@@ -79,12 +113,18 @@ def build_data(header, values):
 
 def write(data):
     global arduino
-    if arduino:
+    if not arduino:
+        return
+    elif not arduino.isOpen():
+        connect()
+    else:
         arduino.write(data)
         arduino.flush()
 
 
 def close():
     global arduino
-    if arduino:
+    if not arduino:
+        return
+    else:
         arduino.close()
