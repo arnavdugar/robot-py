@@ -28,5 +28,12 @@ controller.filename = "model.txt"
 controller.init()
 controller.draw_robot()
 
+
+# Define Cleanup Method
+def exit():
+    arduino.close()
+    sys.exit()
+
+
 # Start Interaction
 code.interact(">>> robot = Robot()", local=controller.__dict__)
