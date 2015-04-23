@@ -1,4 +1,5 @@
 import serial
+import struct
 import subprocess
 import threading
 import time
