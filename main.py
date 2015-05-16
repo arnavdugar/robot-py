@@ -19,20 +19,21 @@ r = serialize.load("model.txt")
 # Draw Window
 window = display.Display()
 
+
+# Define Cleanup Method
+def exit():
+    arduino.close()
+    sys.exit()
+
 # Build Controller
 controller.robot = r
 controller.window = window
 controller.arduino = arduino
 controller.serialize = serialize
 controller.filename = "model.txt"
+controller.exit = exit
 controller.init()
 controller.draw_robot()
-
-
-# Define Cleanup Method
-def exit():
-    arduino.close()
-    sys.exit()
 
 
 # Start Interaction
