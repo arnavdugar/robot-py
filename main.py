@@ -10,7 +10,7 @@ import controller
 
 # Connect to Arduino
 print(">>> arduino.connect()")
-arduino.connect()
+arduino_board = arduino.connect()
 
 # Load Robot Data
 serialize.package = sys.modules[__name__]
@@ -22,11 +22,12 @@ window = display.Display()
 
 # Define Cleanup Method
 def exit():
-    arduino.close()
+    arduino_board.close()
     sys.exit()
 
 # Build Controller
 controller.robot = r
+controller.arduino_board = arduino_board
 controller.window = window
 controller.arduino = arduino
 controller.serialize = serialize

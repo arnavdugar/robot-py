@@ -4,8 +4,6 @@ import subprocess
 import threading
 import time
 
-arduino = None
-
 
 def list_devices():
     cmd = "ls /dev/tty.usbmodem* /dev/cu.usbmodem*"
@@ -38,7 +36,7 @@ def select_device(data):
 def load_device():
     data = list_devices()
     if not data:
-        print("Unable to find Arduino")
+        print("Unable to find Arduino.")
         return
     elif len(data) is not 1:
         return select_device(data)
@@ -48,54 +46,72 @@ def load_device():
 
 def connect(device=None, speed=115200):
     global arduino
-    if not device and arduino:
-        reconnect()
-        return
     if not device:
         device = load_device()
     if not device:
         return
-    arduino = serial.Serial(device, speed, timeout=0)
-    initialize()
+    arduino = Arduino(device)
+    arduino.connect()
+    return arduino
 
 
-def reconnect():
-    try:
-        arduino.open()
-    except serial.SerialException:
-        arduino.close()
-        arduino.open()
-    initialize()
+class Arduino:
 
+    def __init__(self, device):
+        self.device = device
+        self.link = None
+        self.listen_thread = None
 
-def initialize():
-    global arduino
-    arduino.flushInput()
-    if not (hasattr(arduino, 'listen_thread') and arduino.listen_thread and arduino.listen_thread.is_alive()):
-        arduino.listen_thread = Listener()
-        arduino.listen_thread.start()
-        print('Starting Listener.')
+    def connect(self, speed=115200, timeout=0):
+        if self.link:
+            if self.link.isOpen():
+                print('Error Connecting: Device Already Connected')
+                return
+            try:
+                self.link.open()
+            except serial.SerialException:
+                self.link.close()
+                self.link.open()
+        else:
+            self.link = serial.Serial(self.device, speed, timeout=timeout)
+        self.link.flushInput()
+        if not (self.listen_thread and self.listen_thread.is_alive()):
+            self.listen_thread = Listener(self.link)
+            self.listen_thread.start()
+            print('Starting Listener.')
 
+    def isConnected(self):
+        return self.link and self.link.isOpen()
+
+    def write(self, data):
+        self.link.write(data)
+        self.link.flush()
+
+    def close(self):
+        self.link.close()
+
+    def __exit__(self):
+        self.link.close()
 
 
 class Listener(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, arduino):
         threading.Thread.__init__(self)
         self.name = 'Listener'
+        self.arduino = arduino
 
     def run(self):
-        global arduino
         stream = b''
         while True:
-            if not arduino.isOpen():
+            if not self.arduino.isOpen():
                 print('\rTerminating Listener: Arudino Closed.\n>>> ', end='')
                 return
             try:
-                next = arduino.read()
+                next = self.arduino.read()
             except:
                 print('\rError Reading: Closing Connection.')
-                arduino.close()
+                self.arduino.close()
                 continue
             if len(next) == 0:
                 time.sleep(0.2)
@@ -110,22 +126,3 @@ class Listener(threading.Thread):
 
 def build_data(header, values):
     return struct.pack('!c%dH' % len(values), header, *values)
-
-
-def write(data):
-    global arduino
-    if not arduino:
-        return
-    elif not arduino.isOpen():
-        connect()
-    else:
-        arduino.write(data)
-        arduino.flush()
-
-
-def close():
-    global arduino
-    if not arduino:
-        return
-    else:
-        arduino.close()

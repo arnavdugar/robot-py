@@ -81,5 +81,5 @@ def commit():
     data = [0 for _ in range(len(values))]
     for i in range(len(values)):
         data[indexes[i]] = values[i]
-    data = arduino.build_data(b'\xff', data)
-    arduino.write(data)
+    data = arduino_board.build_data(b'\xff', data)
+    arduino_board.write(data)
