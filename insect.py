@@ -39,33 +39,39 @@ class Leg(robot.Leg):
     def compute_base(self, position, start):
         segment = self.segments[0]
         axis = segment.global_axis
-        center = segment.global_direction_center
-        d1, d2, d3 = position * axis, center * axis, start * axis
+        d1, d2, d3 = position * axis, segment.direction_center_normalized * axis, start * axis
         v1 = position - (axis * d1)
         v1 -= start - (axis * d3)
-        v2 = center - (axis * d2)
+        v2 = segment.direction_center_normalized - (axis * d2)
         if v1.interior_angle(v2) > math.pi/2:
             v1 *= -1
-        a0 = math.asin(v2.cross(v1) * axis / (v1.magnitude * v2.magnitude))
-        p0 = (center * segment.length).rotated(axis, a0) + start
-        return a0, p0
-
-    def compute_mid(self, position, start):
-        s1, s2 = self.segments[1:3]
-        remaining = position - start
-        centered_angle = s1.global_direction_center.angle(remaining, s1.axis_normalized)
-        interior_angle = triangle(s1.length, remaining.magnitude, s2.length)
-        a1 = centered_angle + interior_angle
-        p1 = (s1.global_direction_center * s1.length).rotated(s1.global_axis, a1) + start
+        a1 = math.asin(v2.cross(v1) * axis / (v1.magnitude * v2.magnitude))
+        p1 = (segment.direction_center_normalized * segment.length).rotated(axis, a1) + start
         return a1, p1
 
-    def compute_tip(self, position, start):
-        return 0.0
+    def compute_mid(self, position, start, a1):
+        s1, segment, s2 = self.segments
+        remaining = position - start
+        global_direction_center = segment.direction_center_normalized.rotated(s1.axis_normalized, a1)
+        centered_angle = global_direction_center.angle(remaining, segment.axis_normalized)
+        interior_angle = triangle(segment.length, remaining.magnitude, s2.length)
+        a2 = centered_angle + interior_angle
+        p2 = (global_direction_center * segment.length).rotated(segment.global_axis, a2) + start
+        return a2, p2
+
+    def compute_tip(self, position, start, a1, a2):
+        s1, s2, segment = self.segments
+        remaining = position - start
+        global_direction_center = segment.direction_center_normalized.rotated(s2.axis_normalized, a2)
+        global_direction_center = global_direction_center.rotated(s1.axis_normalized, a1)
+        centered_angle = global_direction_center.angle(remaining, segment.axis_normalized)
+        return centered_angle
 
     def move_to(self, position):
-        a0, p0 = self.compute_base(position, self.segments[0].global_start_position)
-        a1, p1 = self.compute_mid(position, p0)
-        a2 = self.compute_tip(position, p1)
+        start = self.segments[0].global_start_position
+        a0, p0 = self.compute_base(position, start)
+        a1, p1 = self.compute_mid(position, p0, a0)
+        a2 = self.compute_tip(position, p1, a0, a1)
         self.segments[0].angle = a0
         self.segments[1].angle = a1
         self.segments[2].angle = a2
