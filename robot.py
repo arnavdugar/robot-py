@@ -36,7 +36,7 @@ class Leg:
 
     @property
     def global_end_position(self):
-        return self.segments[len(self.segments) - 1].global_end_position
+        return self.segments[-1].global_end_position
 
 
 class Segment:
@@ -47,7 +47,6 @@ class Segment:
         self._rotation = self.default_rotation
         self.axis_normalized = self.axis.normalized
         self.direction_center_normalized = self.direction_center.normalized
-        self.display_listener = None
 
     def __repr__(self):
         return "[%s]" % self.name
@@ -58,13 +57,9 @@ class Segment:
 
     @rotation.setter
     def rotation(self, rotation):
-        if rotation < -1:
-            rotation = -1
-        elif rotation > 1:
-            rotation = 1
+        rotation = max(rotation, -1)
+        rotation = min(rotation, 1)
         self._rotation = rotation
-        if self.display_listener:
-            self.display_listener()
 
     @property
     def angle(self):

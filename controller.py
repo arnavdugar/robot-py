@@ -12,10 +12,9 @@ def init():
 
 def callback1(event):
     x, y = event.x - 200, 200 - event.y
-    for i in range(len(robot.legs)):
-        l = robot.legs[i]
-        a, p = l.compute_base(position.Position(x, y, 0))
-        set_angle(i, 0, a)
+    for leg in robot.legs:
+        old_x, old_y, old_z = leg.global_end_position
+        leg.move_to(position.Position(x, y, old_z))
 
 def callback2(event):
     r, z = abs(event.x - 200), 200 - event.y
@@ -41,25 +40,26 @@ def draw_robot():
 
 def draw_leg(leg):
     for segment in leg.segments:
-        window.draw_line(segment.name + ' center', segment.global_start_position, segment.global_start_position +
+        segment_name = segment.name.replace(' ', '_')
+        window.draw_line(segment_name + ' center', segment.global_start_position, segment.global_start_position +
                          segment.global_direction_center * segment.length, fill='#ccc')
-        window.draw_line(segment.name + ' axis', segment.global_start_position, segment.global_start_position +
+        window.draw_line(segment_name + ' axis', segment.global_start_position, segment.global_start_position +
                          segment.global_axis * 15, fill='#900')
-        window.draw_line(segment.name, segment.global_start_position, segment.global_end_position)
+        window.draw_line(segment_name, segment.global_start_position, segment.global_end_position)
 
 
 def set_rotation(l, s, rotation):
     segment = robot.legs[l].segments[s]
     segment.rotation = rotation
-    draw_robot()
-    #window.update_item(segment.name, segment.global_start_position, segment.global_end_position)
+    segment_name = segment.name.replace(' ', '_')
+    window.update_item(segment_name, segment.global_start_position, segment.global_end_position)
 
 
 def set_angle(l, s, angle):
     segment = robot.legs[l].segments[s]
     segment.angle = angle
-    draw_robot()
-    #window.update_item(segment.name, segment.global_start_position, segment.global_end_position)
+    segment_name = segment.name.replace(' ', '_')
+    window.update_item(segment_name, segment.global_start_position, segment.global_end_position)
 
 
 def values():

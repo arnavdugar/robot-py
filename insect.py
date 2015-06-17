@@ -48,17 +48,23 @@ class Leg(robot.Leg):
         if v1.interior_angle(v2) > math.pi/2:
             v1 *= -1
         a = math.asin(v2.cross(v1) * axis / (v1.magnitude * v2.magnitude))
-        p = (center * segment.length).rotated(axis, a)
+        p = (center * segment.length).rotated(axis, a) + segment.global_start_position
         return a, p
 
     def compute_remaining(self, position, start):
         s1, s2 = self.segments[1:3]
-        v = position - start
-        return s1.direction_center.angle(v), 0.0
+        remaining = position - start
+        centered_angle = s1.position.angle(s2.global_direction_center, s2.axis_normalized)
+        interior_angle = triangle(s1.length, s2.length, remaining.magnitude)
+        import pdb; pdb.set_trace()
+        return 0.0, -centered_angle
 
     def move_to(self, position):
         a0, p0 = self.compute_base(position)
         a1, a2 = self.compute_remaining(position, p0)
-        self.segments[0].angle = a1
-        self.segments[1].angle = a2
+        self.segments[0].angle = a0
+        self.segments[1].angle = a1
         self.segments[2].angle = a2
+
+def triangle(l1, l2, l3):
+    return math.acos(((l1 ** 2) + (l2 ** 2) - (l3 ** 2)) / (2 * l1 * l2))

@@ -25,6 +25,11 @@ class Position(ctypes.Structure):
     def __repr__(self):
         return '(%g, %g, %g)' % (self.x, self.y, self.z)
 
+    def __iter__(self):
+        yield self.x
+        yield self.y
+        yield self.z
+
     @property
     def copy(self):
         return Position(self.x, self.y, self.z)

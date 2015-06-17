@@ -22,7 +22,8 @@ window = display.Display()
 
 # Define Cleanup Method
 def exit():
-    arduino_board.close()
+    if arduino_board:
+        arduino_board.close()
     sys.exit()
 
 # Build Controller
