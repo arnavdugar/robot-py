@@ -36,32 +36,36 @@ class Leg(robot.Leg):
         segment.direction_center = segment.direction_center.rotated(axis, angle)
         segment.init()
 
-    def compute_base(self, position):
+    def compute_base(self, position, start):
         segment = self.segments[0]
         axis = segment.global_axis
         center = segment.global_direction_center
-        start = segment.global_start_position
         d1, d2, d3 = position * axis, center * axis, start * axis
         v1 = position - (axis * d1)
         v1 -= start - (axis * d3)
         v2 = center - (axis * d2)
         if v1.interior_angle(v2) > math.pi/2:
             v1 *= -1
-        a = math.asin(v2.cross(v1) * axis / (v1.magnitude * v2.magnitude))
-        p = (center * segment.length).rotated(axis, a) + segment.global_start_position
-        return a, p
+        a0 = math.asin(v2.cross(v1) * axis / (v1.magnitude * v2.magnitude))
+        p0 = (center * segment.length).rotated(axis, a0) + start
+        return a0, p0
 
-    def compute_remaining(self, position, start):
+    def compute_mid(self, position, start):
         s1, s2 = self.segments[1:3]
         remaining = position - start
-        centered_angle = s1.position.angle(s2.global_direction_center, s2.axis_normalized)
-        interior_angle = triangle(s1.length, s2.length, remaining.magnitude)
-        import pdb; pdb.set_trace()
-        return 0.0, -centered_angle
+        centered_angle = s1.global_direction_center.angle(remaining, s1.axis_normalized)
+        interior_angle = triangle(s1.length, remaining.magnitude, s2.length)
+        a1 = centered_angle + interior_angle
+        p1 = (s1.global_direction_center * s1.length).rotated(s1.global_axis, a1) + start
+        return a1, p1
+
+    def compute_tip(self, position, start):
+        return 0.0
 
     def move_to(self, position):
-        a0, p0 = self.compute_base(position)
-        a1, a2 = self.compute_remaining(position, p0)
+        a0, p0 = self.compute_base(position, self.segments[0].global_start_position)
+        a1, p1 = self.compute_mid(position, p0)
+        a2 = self.compute_tip(position, p1)
         self.segments[0].angle = a0
         self.segments[1].angle = a1
         self.segments[2].angle = a2
