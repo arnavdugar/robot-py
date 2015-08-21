@@ -15,6 +15,7 @@ def callback1(event):
     for leg in robot.legs:
         old_x, old_y, old_z = leg.global_end_position
         leg.move_to(position.Position(x, y, old_z))
+    draw_robot()
 
 def callback2(event):
     r, z = abs(event.x - 200), 200 - event.y
@@ -28,6 +29,7 @@ def callback2(event):
         position.z = z
         a, p = l.compute_remaining(position, start)
         set_angle(i, 1, a)
+    draw_robot()
 
 
 def draw_robot():
@@ -83,3 +85,10 @@ def commit():
         data[indexes[i]] = values[i]
     data = arduino_board.build_data(b'\xff', data)
     arduino_board.write(data)
+
+
+def move_leg(l, x, y, z):
+    leg = robot.legs[l]
+    new_position = leg.global_end_position + position.Position(x, y, z)
+    leg.move_to(new_position)
+    draw_robot()

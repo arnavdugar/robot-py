@@ -55,6 +55,8 @@ class Leg(robot.Leg):
         global_direction_center = segment.direction_center_normalized.rotated(s1.axis_normalized, a1)
         centered_angle = global_direction_center.angle(remaining, segment.axis_normalized)
         interior_angle = triangle(segment.length, remaining.magnitude, s2.length)
+        if interior_angle == None:
+            return None, None
         a2 = centered_angle + interior_angle
         p2 = (global_direction_center * segment.length).rotated(segment.global_axis, a2) + start
         return a2, p2
@@ -71,10 +73,16 @@ class Leg(robot.Leg):
         start = self.segments[0].global_start_position
         a0, p0 = self.compute_base(position, start)
         a1, p1 = self.compute_mid(position, p0, a0)
+        if a1 == None and p1 == None:
+            print("Cannot reach position!")
+            return
         a2 = self.compute_tip(position, p1, a0, a1)
         self.segments[0].angle = a0
         self.segments[1].angle = a1
         self.segments[2].angle = a2
 
 def triangle(l1, l2, l3):
-    return math.acos(((l1 ** 2) + (l2 ** 2) - (l3 ** 2)) / (2 * l1 * l2))
+    value = ((l1 ** 2) + (l2 ** 2) - (l3 ** 2)) / (2 * l1 * l2)
+    if value < -1 or 1 < value:
+        return None
+    return math.acos(value)
